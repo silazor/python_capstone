@@ -112,18 +112,31 @@ class TomeRater():
     def __init__(self):
         self.users = {}
         self.books = {}
+        self.isbns = {}
     
+    def __repr__(self):
+        return "\t**User {},  books {}**\n".format(self.users, self.books)
+
+    def add_isbn(self, isbn):
+        if isbn in self.isbns:
+            self.isbns[isbn] += 1
+        else:
+            self.isbns[isbn] = 1
+
     def create_book(self, title, isbn):
+        TomeRater.add_isbn(self, isbn)
         TomeRater.unique_isbn(self, isbn)
         B = Book(title, isbn)
         return B
  
     def create_novel(self, title, author, isbn):
+        TomeRater.add_isbn(self, isbn)
         TomeRater.unique_isbn(self, isbn)
         F = Fiction(title, author, isbn)
         return F
 
     def create_non_fiction(self, title, subject, level, isbn):
+        TomeRater.add_isbn(self, isbn)
         TomeRater.unique_isbn(self, isbn)
         NF = NonFiction(title, subject, level, isbn)
         return NF
@@ -141,24 +154,38 @@ class TomeRater():
                 self.books[book] += 1
             else:
                 self.books[book] = 1
+
+            #if book in self.books.keys():
+            #    self.books[book.title] += 1
+            #else:
+            #    self.books[book.title] = 1
         else:    
             print("\tNo user with email {}!".format(email))       
 
-    def duplicate_email(self, email):
-        print('TODO: check for dup email')
-        pass
+    def duplicate_email(self, input_email):
+        for existing_email in self.users:
+            if existing_email == input_email:
+                print("\tEmail already exists.")
 
     def unique_isbn(self, isbn):
-        print('TODO: is isbn unique')
-        pass
+        if self.isbns[isbn] > 1:
+            print("\tNON unique isbn")
 
-    def validate_email(self, email):
-        print('TODO: validate email')
-        pass
+    def validate_email(email):
+        if '@' not in email:
+            print("@ is not in email {}".format(email))
+        domain = email.split('@')
+        dot = domain[1].split('.')[1]
+        to_check=['com', 'edu', 'org']
+        for check in to_check:
+            if check in dot:
+                return True
+        return False
 
     def add_user(self, name, email, user_books = None):
         TomeRater.duplicate_email(self, email)
-        TomeRater.validate_email(self, email)
+        if not TomeRater.validate_email(email):
+            print("\tEmail is not valid format")
         user_object = User(name, email)
         self.users[email] = user_object 
         
@@ -177,8 +204,7 @@ class TomeRater():
 
     def get_most_read_book(self):
         most_read = max(self.books, key=self.books.get)
-        #print("\t{}".format(most_read))
-        return ("\t{}".format(most_read))
+        return ("\t{}".format(most_read.title))
 
     def highest_rated_book(self):
         highest_rated_book = {}

@@ -6,6 +6,8 @@ Tome_Rater = TomeRater()
 #Create some books:
 print("POP: Create books, novels and non_fictions")
 book1 = Tome_Rater.create_book("Society of Mind", 12345678)
+# check for dup isbn
+book1 = Tome_Rater.create_book("Society of Mind", 12345678)
 novel1 = Tome_Rater.create_novel("Alice In Wonderland", "Lewis Carroll", 12345)
 novel1.set_isbn(9781536831139)
 nonfiction1 = Tome_Rater.create_non_fiction("Automate the Boring Stuff", "Python", "beginner", 1929452)
@@ -19,6 +21,10 @@ novel3 = Tome_Rater.create_novel("There Will Come Soft Rains", "Ray Bradbury", 1
 print("POP: Create some users")
 Tome_Rater.add_user("Alan Turing", "alan@turing.com")
 Tome_Rater.add_user("David Marr", "david@computation.org")
+#check for dup email
+Tome_Rater.add_user("David Marr", "david@computation.org")
+Tome_Rater.add_user("New User", "me@you.net")
+Tome_Rater.add_book_to_user(book1, "me@you.net", 1)
 
 #Add a user with three books already read:
 Tome_Rater.add_user("Marvin Minsky", "marvin@mit.edu", user_books=[book1, novel1, nonfiction1])
